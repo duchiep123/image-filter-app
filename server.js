@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { filterImageFromURL, deleteLocalFiles } from './util/util.js';
+import { filterImageFromURL, deleteLocalFiles, isValidUrl } from './util/util.js';
 
 (async() => {
 
@@ -28,21 +28,18 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util.js';
     //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 
     /**************************************************************************** */
-    function isValidUrl(url) {
-        const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
-        return urlRegex.test(url);
-    }
     app.get('/filteredimage', async(req, res) => {
         const imageUrl = req.query.image_url.toString();
         if (!isValidUrl(imageUrl)) {
             res.status(422).send(`Invalid url (${imageUrl})`);
+            return;
         }
-
         const filteredImage = await filterImageFromURL(imageUrl);
 
         res.status(200).sendFile(filteredImage, () => {
             deleteLocalFiles([filteredImage]);
         });
+        return;
     });
 
     //! END @TODO1

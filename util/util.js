@@ -10,6 +10,10 @@ import fetch from "node-fetch";
 //    inputURL: string - a publicly accessible url to an image file
 // RETURNS
 //    an absolute path to a filtered image locally saved file
+export function isValidUrl(url) {
+    const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+    return urlRegex.test(url);
+}
 export async function filterImageFromURL(inputURL) {
     return new Promise(async(resolve, reject) => {
         try {
